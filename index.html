@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#05070b">
+<title>APEX DRIVE — Ultimate 3D Racing</title>
+<link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<!-- =========================================================
+     GAME CANVAS
+========================================================= -->
+
+<div id="game"></div>
+
+<!-- =========================================================
+     LOADING SCREEN
+========================================================= -->
+
+<section id="loadingScreen">
+
+  <div class="loadingLogo">
+    <span>APEX</span> DRIVE
+  </div>
+
+  <div class="loadingSub">
+    ULTIMATE 3D STREET RACING
+  </div>
+
+  <div class="loadingCar">
+    🏎️
+  </div>
+
+  <div class="loadingTrack">
+    <div id="loadingBar"></div>
+  </div>
+
+  <div id="loadingText">
+    INITIALIZING ENGINE...
+  </div>
+
+</section>
+
+<!-- =========================================================
+     MAIN MENU
+========================================================= -->
+
+<section id="mainMenu">
+
+  <div class="menuBackground"></div>
+
+  <div class="menuTop">
+
+```
+<div class="brand">
+  <span>APEX</span> DRIVE
+</div>
+
+<div class="profile">
+
+  <div class="profileLevel">
+    LVL <strong id="playerLevel">1</strong>
+  </div>
+
+  <div class="profileCoins">
+    🪙 <strong id="playerCoins">2500</strong>
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <div class="menuContent">
+
+```
+<div class="eyebrow">
+  WELCOME TO THE STREETS
+</div>
+
+<h1>
+  APEX
+  <span>DRIVE</span>
+</h1>
+
+<div class="menuLine"></div>
+
+<p class="tagline">
+  RACE • DRIFT • BOOST • DOMINATE
+</p>
+
+
+<div class="menuButtons">
+
+  <button id="startRaceButton" class="mainButton">
+    <span>▶</span>
+    START RACE
+  </button>
+
+  <button id="garageButton" class="menuButton">
+    🏎️ GARAGE
+  </button>
+
+  <button id="tracksButton" class="menuButton">
+    🗺️ TRACKS
+  </button>
+
+  <button id="settingsButton" class="menuButton">
+    ⚙️ SETTINGS
+  </button>
+
+</div>
+
+
+<div class="quickStats">
+
+  <div>
+    <strong>6</strong>
+    <span>DRIVERS</span>
+  </div>
+
+  <div>
+    <strong>3</strong>
+    <span>LAPS</span>
+  </div>
+
+  <div>
+    <strong>12+</strong>
+    <span>CARS</span>
+  </div>
+
+  <div>
+    <strong>5</strong>
+    <span>TRACKS</span>
+  </div>
+
+</div>
+```
+
+  </div>
+
+  <div class="menuBottom">
+
+```
+<span>APEX DRIVE v1.0</span>
+
+<span>
+  W/S ACCELERATE • A/D STEER • SPACE NITRO
+</span>
+```
+
+  </div>
+
+</section>
+
+<!-- =========================================================
+     GARAGE
+========================================================= -->
+
+<section id="garageScreen" class="overlayScreen">
+
+  <div class="overlayHeader">
+
+```
+<button class="backButton" data-close="garageScreen">
+  ← BACK
+</button>
+
+<h2>GARAGE</h2>
+
+<div class="garageMoney">
+  🪙 <span id="garageCoins">2500</span>
+</div>
+```
+
+  </div>
+
+  <div class="garageLayout">
+
+```
+<div class="carPreview">
+
+  <div id="garageCanvas"></div>
+
+  <div class="carName" id="selectedCarName">
+    APEX GT
+  </div>
+
+  <div class="carClass">
+    SUPER SPORT
+  </div>
+
+</div>
+
+
+<div class="carDetails">
+
+  <div class="stat">
+
+    <div>
+      <span>SPEED</span>
+      <strong id="carSpeed">92</strong>
+    </div>
+
+    <div class="statBar">
+      <i style="width:92%"></i>
+    </div>
+
+  </div>
+
+
+  <div class="stat">
+
+    <div>
+      <span>ACCELERATION</span>
+      <strong id="carAcceleration">88</strong>
+    </div>
+
+    <div class="statBar">
+      <i style="width:88%"></i>
+    </div>
+
+  </div>
+
+
+  <div class="stat">
+
+    <div>
+      <span>HANDLING</span>
+      <strong id="carHandling">84</strong>
+    </div>
+
+    <div class="statBar">
+      <i style="width:84%"></i>
+    </div>
+
+  </div>
+
+
+  <div class="stat">
+
+    <div>
+      <span>NITRO</span>
+      <strong id="carNitro">95</strong>
+    </div>
+
+    <div class="statBar">
+      <i style="width:95%"></i>
+    </div>
+
+  </div>
+
+
+  <button id="selectCarButton" class="mainButton">
+    SELECT CAR
+  </button>
+
+</div>
+```
+
+  </div>
+
+  <div class="carSelector">
+
+```
+<button class="carCard selected" data-car="0">
+  <div class="carIcon">🏎️</div>
+  <strong>APEX GT</strong>
+  <small>SUPER SPORT</small>
+</button>
+
+<button class="carCard" data-car="1">
+  <div class="carIcon">🚘</div>
+  <strong>VORTEX R</strong>
+  <small>HYPER</small>
+</button>
+
+<button class="carCard" data-car="2">
+  <div class="carIcon">🏎️</div>
+  <strong>PHANTOM X</strong>
+  <small>TRACK</small>
+</button>
+
+<button class="carCard" data-car="3">
+  <div class="carIcon">🚗</div>
+  <strong>STORM GT</strong>
+  <small>RACING</small>
+</button>
+```
+
+  </div>
+
+</section>
+
+<!-- =========================================================
+     TRACK SELECT
+========================================================= -->
+
+<section id="tracksScreen" class="overlayScreen">
+
+  <div class="overlayHeader">
+
+```
+<button class="backButton" data-close="tracksScreen">
+  ← BACK
+</button>
+
+<h2>TRACK SELECT</h2>
+```
+
+  </div>
+
+  <div class="trackGrid">
+
+```
+<button class="trackCard selected" data-track="city">
+
+  <div class="trackImage cityTrack">
+    🌆
+  </div>
+
+  <div class="trackInfo">
+    <strong>NEON CITY</strong>
+    <span>URBAN CIRCUIT</span>
+    <small>DAY • NIGHT • RAIN</small>
+  </div>
+
+</button>
+
+
+<button class="trackCard" data-track="coast">
+
+  <div class="trackImage coastTrack">
+    🌊
+  </div>
+
+  <div class="trackInfo">
+    <strong>COASTAL RUN</strong>
+    <span>OCEAN HIGHWAY</span>
+    <small>COMING SOON</small>
+  </div>
+
+</button>
+
+
+<button class="trackCard" data-track="mountain">
+
+  <div class="trackImage mountainTrack">
+    🏔️
+  </div>
+
+  <div class="trackInfo">
+    <strong>MOUNTAIN PASS</strong>
+    <span>HIGH ALTITUDE</span>
+    <small>COMING SOON</small>
+  </div>
+
+</button>
+
+
+<button class="trackCard" data-track="desert">
+
+  <div class="trackImage desertTrack">
+    🏜️
+  </div>
+
+  <div class="trackInfo">
+    <strong>DESERT STORM</strong>
+    <span>OPEN ROAD</span>
+    <small>COMING SOON</small>
+  </div>
+
+</button>
+```
+
+  </div>
+
+</section>
+
+<!-- =========================================================
+     SETTINGS
+========================================================= -->
+
+<section id="settingsScreen" class="overlayScreen">
+
+  <div class="overlayHeader">
+
+```
+<button class="backButton" data-close="settingsScreen">
+  ← BACK
+</button>
+
+<h2>SETTINGS</h2>
+```
+
+  </div>
+
+  <div class="settingsBox">
+
+```
+<div class="settingRow">
+
+  <div>
+    <strong>GRAPHICS</strong>
+    <span>3D rendering quality</span>
+  </div>
+
+  <select id="graphicsQuality">
+    <option>HIGH</option>
+    <option>MEDIUM</option>
+    <option>LOW</option>
+  </select>
+
+</div>
+
+
+<div class="settingRow">
+
+  <div>
+    <strong>CAMERA</strong>
+    <span>Racing camera view</span>
+  </div>
+
+  <select id="cameraMode">
+    <option value="chase">CHASE</option>
+    <option value="close">CLOSE</option>
+    <option value="hood">HOOD</option>
+  </select>
+
+</div>
+
+
+<div class="settingRow">
+
+  <div>
+    <strong>WEATHER</strong>
+    <span>Dynamic race weather</span>
+  </div>
+
+  <select id="weatherMode">
+    <option value="dynamic">DYNAMIC</option>
+    <option value="clear">CLEAR</option>
+    <option value="rain">RAIN</option>
+    <option value="night">NIGHT</option>
+  </select>
+
+</div>
+
+
+<div class="settingRow">
+
+  <div>
+    <strong>SOUND</strong>
+    <span>Game audio</span>
+  </div>
+
+  <button id="soundToggle" class="toggle active">
+    ON
+  </button>
+
+</div>
+```
+
+  </div>
+
+</section>
+
+<!-- =========================================================
+     RACE HUD
+========================================================= -->
+
+<section id="hud">
+
+  <!-- SPEED -->
+
+  <div id="speedPanel" class="hudPanel">
+
+```
+<div class="hudLabel">
+  SPEED
+</div>
+
+<div class="speedNumber">
+  <span id="speed">0</span>
+  <small>KM/H</small>
+</div>
+
+<div class="gearDisplay">
+  GEAR
+  <strong id="gear">1</strong>
+</div>
+```
+
+  </div>
+
+  <!-- POSITION -->
+
+  <div id="racePanel" class="hudPanel">
+
+```
+<div id="position">
+
+  <strong id="positionNumber">
+    1
+  </strong>
+
+  <span>
+    / 6
+  </span>
+
+</div>
+
+<div id="lap">
+
+  LAP
+  <strong id="lapNumber">1</strong>
+  / 3
+
+</div>
+```
+
+  </div>
+
+  <!-- TIME -->
+
+  <div id="timePanel" class="hudPanel">
+
+```
+<div class="hudLabel">
+  RACE TIME
+</div>
+
+<div id="raceTime">
+  00:00.000
+</div>
+
+<div class="bestTime">
+  BEST
+  <span id="bestTime">
+    --:--.---
+  </span>
+</div>
+```
+
+  </div>
+
+  <!-- CHECKPOINT -->
+
+  <div id="checkpointDisplay">
+    CHECKPOINT
+    <strong id="checkpointNumber">1</strong>
+  </div>
+
+  <!-- CENTER MESSAGE -->
+
+  <div id="raceMessage"></div>
+
+  <!-- NITRO -->
+
+  <div id="nitroPanel">
+
+```
+<div class="nitroHeader">
+
+  <span>
+    NITRO
+  </span>
+
+  <strong id="nitroPercent">
+    100%
+  </strong>
+
+</div>
+
+<div class="nitroOuter">
+
+  <div id="nitroBar"></div>
+
+</div>
+
+<div class="nitroHint">
+  HOLD SPACE TO BOOST
+</div>
+```
+
+  </div>
+
+  <!-- MINI MAP -->
+
+  <div id="miniMapPanel">
+
+```
+<div class="mapTitle">
+  CITY CIRCUIT
+</div>
+
+<canvas id="miniMap"
+        width="240"
+        height="160">
+</canvas>
+```
+
+  </div>
+
+  <!-- PAUSE BUTTON -->
+
+  <button id="pauseButton">
+    II
+  </button>
+
+</section>
+
+<!-- =========================================================
+     MOBILE CONTROLS
+========================================================= -->
+
+<div id="mobileControls">
+
+<button id="steerLeft"
+       class="controlButton steerButton">
+◀ </button>
+
+<button id="steerRight"
+       class="controlButton steerButton">
+▶ </button>
+
+<button id="brakeButton"
+       class="controlButton brakeButton">
+▼ </button>
+
+<button id="accelerateButton"
+       class="controlButton accelerateButton">
+▲ </button>
+
+<button id="nitroButton"
+       class="controlButton nitroButton">
+⚡ </button>
+
+</div>
+
+<!-- =========================================================
+     COUNTDOWN
+========================================================= -->
+
+<div id="countdown">
+</div>
+
+<!-- =========================================================
+     PAUSE SCREEN
+========================================================= -->
+
+<section id="pauseScreen">
+
+  <div class="pauseBox">
+
+```
+<div class="eyebrow">
+  RACE PAUSED
+</div>
+
+<h2>
+  PAUSED
+</h2>
+
+<button id="resumeButton"
+        class="mainButton">
+  RESUME
+</button>
+
+<button id="pauseRestartButton"
+        class="secondaryButton">
+  RESTART RACE
+</button>
+
+<button id="pauseMenuButton"
+        class="secondaryButton">
+  MAIN MENU
+</button>
+```
+
+  </div>
+
+</section>
+
+<!-- =========================================================
+     FINISH SCREEN
+========================================================= -->
+
+<section id="finishScreen">
+
+  <div class="finishBox">
+
+```
+<div class="finishEyebrow">
+  RACE COMPLETE
+</div>
+
+<h2>
+  FINISH!
+</h2>
+
+<div class="finishPosition">
+
+  <span id="finalPosition">
+    1
+  </span>
+
+  <small>
+    PLACE
+  </small>
+
+</div>
+
+
+<div class="finishStats">
+
+  <div>
+    <span>RACE TIME</span>
+    <strong id="finalTime">
+      00:00.000
+    </strong>
+  </div>
+
+  <div>
+    <span>BEST LAP</span>
+    <strong id="finalLap">
+      00:00.000
+    </strong>
+  </div>
+
+  <div>
+    <span>REWARD</span>
+    <strong id="finalReward">
+      +500 🪙
+    </strong>
+  </div>
+
+</div>
+
+
+<div class="finishButtons">
+
+  <button id="restartButton"
+          class="mainButton">
+    RACE AGAIN
+  </button>
+
+  <button id="menuButton"
+          class="secondaryButton">
+    MAIN MENU
+  </button>
+
+</div>
+```
+
+  </div>
+
+</section>
+
+<!-- =========================================================
+     ACHIEVEMENT POPUP
+========================================================= -->
+
+<div id="achievementPopup">
+
+  <div class="achievementIcon">
+    🏆
+  </div>
+
+  <div>
+    <small>ACHIEVEMENT UNLOCKED</small>
+    <strong id="achievementName">
+      FIRST RACE
+    </strong>
+  </div>
+
+</div>
+
+<!-- =========================================================
+     GAME SCRIPT
+========================================================= -->
+
+<script type="module" src="game.js"></script>
+
+</body>
+</html>
