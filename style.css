@@ -1,0 +1,1688 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #05070b;
+  color: white;
+  font-family: Arial, Helvetica, sans-serif;
+  user-select: none;
+}
+
+body {
+  touch-action: none;
+}
+
+button,
+select {
+  font: inherit;
+}
+
+
+/* =========================================================
+   GAME
+========================================================= */
+
+#game {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+}
+
+#game canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+
+/* =========================================================
+   LOADING SCREEN
+========================================================= */
+
+#loadingScreen {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    radial-gradient(
+      circle at center,
+      #1b2a45 0%,
+      #080d17 45%,
+      #020306 100%
+    );
+
+  transition:
+    opacity .7s ease,
+    visibility .7s ease;
+}
+
+#loadingScreen.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.loadingLogo {
+  font-size: clamp(45px, 8vw, 100px);
+  font-weight: 1000;
+  font-style: italic;
+  letter-spacing: 5px;
+  text-shadow:
+    0 0 30px rgba(255,255,255,.25);
+}
+
+.loadingLogo span {
+  opacity: .55;
+}
+
+.loadingSub {
+  margin-top: 10px;
+  font-size: 12px;
+  letter-spacing: 6px;
+  opacity: .55;
+}
+
+.loadingCar {
+  font-size: 80px;
+  margin: 45px 0 35px;
+
+  animation:
+    loadingCar 1s ease-in-out infinite alternate;
+}
+
+@keyframes loadingCar {
+  from {
+    transform: translateX(-18px);
+  }
+
+  to {
+    transform: translateX(18px);
+  }
+}
+
+.loadingTrack {
+  width: min(550px, 70vw);
+  height: 7px;
+
+  background: rgba(255,255,255,.12);
+
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+#loadingBar {
+  width: 0;
+  height: 100%;
+
+  background: white;
+
+  box-shadow:
+    0 0 20px white;
+
+  transition:
+    width .15s linear;
+}
+
+#loadingText {
+  margin-top: 15px;
+
+  font-size: 11px;
+  letter-spacing: 3px;
+
+  opacity: .55;
+}
+
+
+/* =========================================================
+   MAIN MENU
+========================================================= */
+
+#mainMenu {
+  position: fixed;
+  inset: 0;
+
+  z-index: 100;
+
+  display: flex;
+  flex-direction: column;
+
+  transition:
+    opacity .5s ease,
+    visibility .5s ease;
+}
+
+#mainMenu.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.menuBackground {
+  position: absolute;
+  inset: 0;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(2,4,8,.96),
+      rgba(2,4,8,.7),
+      rgba(2,4,8,.15)
+    );
+
+  pointer-events: none;
+}
+
+.menuTop {
+  position: relative;
+  z-index: 2;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 28px 35px;
+}
+
+.brand {
+  font-size: 24px;
+  font-weight: 900;
+  font-style: italic;
+  letter-spacing: 2px;
+}
+
+.brand span {
+  opacity: .5;
+}
+
+.profile {
+  display: flex;
+  gap: 10px;
+}
+
+.profileLevel,
+.profileCoins {
+  padding: 10px 15px;
+
+  background: rgba(10,14,23,.75);
+
+  border: 1px solid rgba(255,255,255,.13);
+
+  border-radius: 10px;
+
+  backdrop-filter: blur(10px);
+
+  font-size: 13px;
+}
+
+.menuContent {
+  position: relative;
+  z-index: 2;
+
+  width: min(700px, 90vw);
+
+  margin-left: 8vw;
+  margin-top: 8vh;
+}
+
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 5px;
+  opacity: .55;
+}
+
+.menuContent h1 {
+  margin: 12px 0 0;
+
+  font-size: clamp(65px, 10vw, 145px);
+
+  line-height: .78;
+
+  font-style: italic;
+
+  letter-spacing: -7px;
+
+  text-shadow:
+    0 12px 40px rgba(0,0,0,.8);
+}
+
+.menuContent h1 span {
+  color: transparent;
+
+  -webkit-text-stroke:
+    2px rgba(255,255,255,.85);
+}
+
+.menuLine {
+  width: 120px;
+  height: 3px;
+
+  margin: 28px 0;
+
+  background: white;
+}
+
+.tagline {
+  font-size: 14px;
+  letter-spacing: 5px;
+  opacity: .65;
+}
+
+.menuButtons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin-top: 35px;
+}
+
+.mainButton,
+.menuButton,
+.secondaryButton {
+  border: 0;
+
+  cursor: pointer;
+
+  transition:
+    transform .2s ease,
+    background .2s ease,
+    box-shadow .2s ease;
+}
+
+.mainButton:hover,
+.menuButton:hover,
+.secondaryButton:hover {
+  transform: translateY(-3px);
+}
+
+.mainButton {
+  min-width: 220px;
+
+  padding: 17px 28px;
+
+  border-radius: 10px;
+
+  background: white;
+  color: #05070b;
+
+  font-size: 15px;
+  font-weight: 900;
+  letter-spacing: 1px;
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.35);
+}
+
+.mainButton span {
+  margin-right: 10px;
+}
+
+.menuButton {
+  padding: 16px 22px;
+
+  border-radius: 10px;
+
+  background: rgba(255,255,255,.08);
+  color: white;
+
+  border: 1px solid rgba(255,255,255,.15);
+
+  backdrop-filter: blur(10px);
+
+  font-weight: 700;
+}
+
+.quickStats {
+  display: flex;
+  gap: 45px;
+
+  margin-top: 55px;
+}
+
+.quickStats div {
+  display: flex;
+  flex-direction: column;
+}
+
+.quickStats strong {
+  font-size: 25px;
+}
+
+.quickStats span {
+  margin-top: 4px;
+
+  font-size: 9px;
+  letter-spacing: 2px;
+
+  opacity: .45;
+}
+
+.menuBottom {
+  position: absolute;
+  z-index: 2;
+
+  left: 35px;
+  right: 35px;
+  bottom: 22px;
+
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 9px;
+  letter-spacing: 2px;
+
+  opacity: .35;
+}
+
+
+/* =========================================================
+   OVERLAY SCREENS
+========================================================= */
+
+.overlayScreen {
+  position: fixed;
+  inset: 0;
+
+  z-index: 200;
+
+  display: flex;
+  flex-direction: column;
+
+  background:
+    radial-gradient(
+      circle at 70% 30%,
+      #182337,
+      #070a10 60%
+    );
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity .35s ease,
+    visibility .35s ease;
+}
+
+.overlayScreen.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.overlayHeader {
+  display: flex;
+  align-items: center;
+
+  gap: 30px;
+
+  padding: 28px 35px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.08);
+}
+
+.overlayHeader h2 {
+  margin: 0;
+
+  font-size: 35px;
+
+  font-style: italic;
+}
+
+.backButton {
+  padding: 10px 15px;
+
+  border-radius: 8px;
+
+  border: 1px solid rgba(255,255,255,.15);
+
+  background: rgba(255,255,255,.06);
+
+  color: white;
+
+  cursor: pointer;
+}
+
+.garageMoney {
+  margin-left: auto;
+}
+
+
+/* =========================================================
+   GARAGE
+========================================================= */
+
+.garageLayout {
+  display: grid;
+
+  grid-template-columns:
+    minmax(300px, 1.5fr)
+    minmax(280px, 1fr);
+
+  gap: 35px;
+
+  flex: 1;
+
+  padding: 35px;
+
+  min-height: 0;
+}
+
+.carPreview {
+  position: relative;
+
+  min-height: 300px;
+
+  border-radius: 22px;
+
+  background:
+    radial-gradient(
+      circle at center,
+      rgba(40,60,90,.7),
+      rgba(5,8,13,.8)
+    );
+
+  border:
+    1px solid rgba(255,255,255,.1);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  overflow: hidden;
+}
+
+#garageCanvas {
+  position: absolute;
+  inset: 0;
+}
+
+.carName {
+  position: absolute;
+
+  left: 25px;
+  bottom: 45px;
+
+  font-size: 35px;
+  font-weight: 900;
+  font-style: italic;
+}
+
+.carClass {
+  position: absolute;
+
+  left: 27px;
+  bottom: 22px;
+
+  font-size: 10px;
+  letter-spacing: 3px;
+  opacity: .5;
+}
+
+.carDetails {
+  align-self: center;
+}
+
+.stat {
+  margin-bottom: 24px;
+}
+
+.stat > div:first-child {
+  display: flex;
+  justify-content: space-between;
+
+  font-size: 11px;
+  letter-spacing: 1px;
+}
+
+.statBar {
+  height: 7px;
+
+  margin-top: 8px;
+
+  border-radius: 10px;
+
+  background: rgba(255,255,255,.1);
+
+  overflow: hidden;
+}
+
+.statBar i {
+  display: block;
+
+  height: 100%;
+
+  background: white;
+
+  border-radius: inherit;
+}
+
+.carDetails .mainButton {
+  width: 100%;
+  margin-top: 10px;
+}
+
+.carSelector {
+  display: flex;
+
+  gap: 15px;
+
+  padding: 0 35px 30px;
+
+  overflow-x: auto;
+}
+
+.carCard {
+  min-width: 180px;
+
+  padding: 18px;
+
+  text-align: left;
+
+  color: white;
+
+  border-radius: 15px;
+
+  border: 1px solid rgba(255,255,255,.1);
+
+  background: rgba(255,255,255,.05);
+
+  cursor: pointer;
+}
+
+.carCard.selected {
+  background: rgba(255,255,255,.14);
+
+  border-color:
+    rgba(255,255,255,.45);
+}
+
+.carIcon {
+  font-size: 40px;
+  margin-bottom: 10px;
+}
+
+.carCard strong,
+.carCard small {
+  display: block;
+}
+
+.carCard small {
+  margin-top: 4px;
+
+  font-size: 9px;
+
+  letter-spacing: 2px;
+
+  opacity: .45;
+}
+
+
+/* =========================================================
+   TRACKS
+========================================================= */
+
+.trackGrid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(
+      auto-fit,
+      minmax(250px,1fr)
+    );
+
+  gap: 22px;
+
+  padding: 35px;
+
+  overflow-y: auto;
+}
+
+.trackCard {
+  min-height: 250px;
+
+  padding: 0;
+
+  overflow: hidden;
+
+  color: white;
+
+  text-align: left;
+
+  background: rgba(255,255,255,.05);
+
+  border:
+    1px solid rgba(255,255,255,.1);
+
+  border-radius: 18px;
+
+  cursor: pointer;
+}
+
+.trackCard.selected {
+  border-color:
+    rgba(255,255,255,.65);
+}
+
+.trackImage {
+  height: 150px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: 70px;
+}
+
+.cityTrack {
+  background:
+    linear-gradient(
+      135deg,
+      #172b45,
+      #0d1017
+    );
+}
+
+.coastTrack {
+  background:
+    linear-gradient(
+      135deg,
+      #16485a,
+      #071c29
+    );
+}
+
+.mountainTrack {
+  background:
+    linear-gradient(
+      135deg,
+      #303945,
+      #0b0e13
+    );
+}
+
+.desertTrack {
+  background:
+    linear-gradient(
+      135deg,
+      #664426,
+      #1a0f09
+    );
+}
+
+.trackInfo {
+  padding: 18px;
+}
+
+.trackInfo strong,
+.trackInfo span,
+.trackInfo small {
+  display: block;
+}
+
+.trackInfo span {
+  margin-top: 5px;
+  font-size: 11px;
+  opacity: .55;
+}
+
+.trackInfo small {
+  margin-top: 8px;
+  font-size: 8px;
+  letter-spacing: 2px;
+  opacity: .35;
+}
+
+
+/* =========================================================
+   SETTINGS
+========================================================= */
+
+.settingsBox {
+  width: min(750px,90vw);
+
+  margin: 60px auto;
+
+  background: rgba(255,255,255,.04);
+
+  border:
+    1px solid rgba(255,255,255,.1);
+
+  border-radius: 18px;
+
+  overflow: hidden;
+}
+
+.settingRow {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  padding: 25px;
+
+  border-bottom:
+    1px solid rgba(255,255,255,.07);
+}
+
+.settingRow:last-child {
+  border-bottom: 0;
+}
+
+.settingRow strong,
+.settingRow span {
+  display: block;
+}
+
+.settingRow span {
+  margin-top: 5px;
+
+  font-size: 11px;
+
+  opacity: .45;
+}
+
+.settingRow select {
+  padding: 10px 14px;
+
+  border-radius: 8px;
+
+  border: 1px solid rgba(255,255,255,.15);
+
+  background: #10151e;
+
+  color: white;
+}
+
+.toggle {
+  min-width: 60px;
+
+  padding: 9px 15px;
+
+  border: 0;
+
+  border-radius: 20px;
+
+  background: #333;
+
+  color: white;
+
+  cursor: pointer;
+}
+
+.toggle.active {
+  background: white;
+  color: #05070b;
+}
+
+
+/* =========================================================
+   HUD
+========================================================= */
+
+#hud {
+  position: fixed;
+  inset: 0;
+
+  z-index: 20;
+
+  pointer-events: none;
+
+  opacity: 0;
+}
+
+#hud.visible {
+  opacity: 1;
+}
+
+.hudPanel {
+  position: absolute;
+
+  padding: 12px 17px;
+
+  border-radius: 13px;
+
+  background:
+    rgba(5,8,14,.65);
+
+  border:
+    1px solid rgba(255,255,255,.12);
+
+  backdrop-filter: blur(9px);
+
+  box-shadow:
+    0 10px 35px rgba(0,0,0,.25);
+}
+
+#speedPanel {
+  left: 20px;
+  top: 20px;
+}
+
+.hudLabel {
+  font-size: 9px;
+  letter-spacing: 2px;
+  opacity: .45;
+}
+
+.speedNumber {
+  font-size: 40px;
+  font-weight: 900;
+}
+
+.speedNumber small {
+  font-size: 9px;
+  letter-spacing: 1px;
+  opacity: .45;
+}
+
+.gearDisplay {
+  margin-top: 4px;
+
+  font-size: 9px;
+
+  letter-spacing: 2px;
+
+  opacity: .5;
+}
+
+.gearDisplay strong {
+  color: white;
+  opacity: 1;
+  margin-left: 5px;
+}
+
+#racePanel {
+  top: 20px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  text-align: center;
+}
+
+#position {
+  font-size: 32px;
+  font-weight: 900;
+}
+
+#position span {
+  font-size: 13px;
+  opacity: .4;
+}
+
+#lap {
+  margin-top: 4px;
+
+  font-size: 9px;
+
+  letter-spacing: 2px;
+
+  opacity: .55;
+}
+
+#timePanel {
+  right: 20px;
+  top: 20px;
+
+  text-align: right;
+}
+
+#raceTime {
+  font-size: 23px;
+  font-weight: 800;
+}
+
+.bestTime {
+  margin-top: 5px;
+
+  font-size: 8px;
+  letter-spacing: 1px;
+
+  opacity: .45;
+}
+
+#checkpointDisplay {
+  position: absolute;
+
+  top: 105px;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  font-size: 9px;
+  letter-spacing: 2px;
+
+  opacity: .5;
+}
+
+#checkpointDisplay strong {
+  color: white;
+  opacity: 1;
+}
+
+
+/* =========================================================
+   RACE MESSAGE
+========================================================= */
+
+#raceMessage {
+  position: absolute;
+
+  left: 50%;
+  top: 28%;
+
+  transform:
+    translate(-50%, -20px)
+    scale(.9);
+
+  font-size: clamp(
+    25px,
+    5vw,
+    65px
+  );
+
+  font-weight: 1000;
+
+  font-style: italic;
+
+  opacity: 0;
+
+  text-shadow:
+    0 5px 25px #000;
+
+  transition:
+    opacity .25s,
+    transform .25s;
+}
+
+#raceMessage.show {
+  opacity: 1;
+
+  transform:
+    translate(-50%,0)
+    scale(1);
+}
+
+
+/* =========================================================
+   NITRO
+========================================================= */
+
+#nitroPanel {
+  position: absolute;
+
+  left: 20px;
+  bottom: 25px;
+
+  width: min(350px, 35vw);
+
+  padding: 13px 15px;
+
+  background:
+    rgba(5,8,14,.65);
+
+  border:
+    1px solid rgba(255,255,255,.12);
+
+  border-radius: 13px;
+
+  backdrop-filter: blur(8px);
+}
+
+.nitroHeader {
+  display: flex;
+
+  justify-content: space-between;
+
+  font-size: 9px;
+
+  letter-spacing: 2px;
+}
+
+.nitroHeader strong {
+  font-size: 10px;
+}
+
+.nitroOuter {
+  height: 12px;
+
+  margin-top: 9px;
+
+  overflow: hidden;
+
+  border-radius: 20px;
+
+  background:
+    rgba(255,255,255,.1);
+}
+
+#nitroBar {
+  width: 100%;
+  height: 100%;
+
+  background:
+    linear-gradient(
+      90deg,
+      #3dbfff,
+      white
+    );
+
+  box-shadow:
+    0 0 18px #55cfff;
+
+  border-radius: inherit;
+
+  transition:
+    width .1s linear;
+}
+
+.nitroHint {
+  margin-top: 7px;
+
+  font-size: 7px;
+
+  letter-spacing: 2px;
+
+  opacity: .35;
+}
+
+
+/* =========================================================
+   MINIMAP
+========================================================= */
+
+#miniMapPanel {
+  position: absolute;
+
+  right: 20px;
+  bottom: 20px;
+
+  padding: 8px;
+
+  background:
+    rgba(5,8,14,.72);
+
+  border:
+    1px solid rgba(255,255,255,.13);
+
+  border-radius: 13px;
+
+  backdrop-filter: blur(8px);
+}
+
+.mapTitle {
+  padding: 4px 7px;
+
+  font-size: 7px;
+
+  letter-spacing: 2px;
+
+  opacity: .45;
+}
+
+#miniMap {
+  display: block;
+
+  width: 220px;
+  height: 145px;
+
+  border-radius: 7px;
+}
+
+
+/* =========================================================
+   PAUSE
+========================================================= */
+
+#pauseScreen,
+#finishScreen {
+  position: fixed;
+  inset: 0;
+
+  z-index: 300;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(2,4,8,.75);
+
+  backdrop-filter: blur(10px);
+
+  opacity: 0;
+  visibility: hidden;
+
+  pointer-events: none;
+
+  transition:
+    opacity .3s,
+    visibility .3s;
+}
+
+#pauseScreen.visible,
+#finishScreen.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.pauseBox,
+.finishBox {
+  width: min(600px,90vw);
+
+  padding: 45px;
+
+  text-align: center;
+
+  border-radius: 24px;
+
+  background:
+    linear-gradient(
+      145deg,
+      #151c29,
+      #080b11
+    );
+
+  border:
+    1px solid rgba(255,255,255,.12);
+
+  box-shadow:
+    0 30px 100px rgba(0,0,0,.65);
+}
+
+.pauseBox h2,
+.finishBox h2 {
+  margin: 10px 0 35px;
+
+  font-size: clamp(
+    50px,
+    8vw,
+    90px
+  );
+
+  font-style: italic;
+}
+
+.pauseBox .mainButton,
+.pauseBox .secondaryButton {
+  display: block;
+
+  width: 100%;
+
+  margin-top: 12px;
+}
+
+
+/* =========================================================
+   SECONDARY BUTTON
+========================================================= */
+
+.secondaryButton {
+  padding: 15px 25px;
+
+  border-radius: 10px;
+
+  background:
+    rgba(255,255,255,.07);
+
+  color: white;
+
+  border:
+    1px solid rgba(255,255,255,.13);
+
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   FINISH
+========================================================= */
+
+.finishEyebrow {
+  font-size: 10px;
+
+  letter-spacing: 5px;
+
+  opacity: .45;
+}
+
+.finishPosition {
+  display: flex;
+
+  flex-direction: column;
+
+  align-items: center;
+
+  margin-bottom: 30px;
+}
+
+.finishPosition span {
+  font-size: 90px;
+
+  font-weight: 1000;
+
+  font-style: italic;
+}
+
+.finishPosition small {
+  font-size: 9px;
+  letter-spacing: 4px;
+  opacity: .45;
+}
+
+.finishStats {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3,1fr);
+
+  gap: 10px;
+
+  margin-bottom: 30px;
+}
+
+.finishStats div {
+  padding: 15px;
+
+  border-radius: 10px;
+
+  background:
+    rgba(255,255,255,.05);
+}
+
+.finishStats span,
+.finishStats strong {
+  display: block;
+}
+
+.finishStats span {
+  font-size: 8px;
+  letter-spacing: 2px;
+  opacity: .4;
+}
+
+.finishStats strong {
+  margin-top: 7px;
+  font-size: 14px;
+}
+
+.finishButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+
+/* =========================================================
+   COUNTDOWN
+========================================================= */
+
+#countdown {
+  position: fixed;
+  inset: 0;
+
+  z-index: 500;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  font-size: clamp(
+    90px,
+    18vw,
+    220px
+  );
+
+  font-weight: 1000;
+
+  font-style: italic;
+
+  text-shadow:
+    0 10px 50px rgba(0,0,0,.8);
+
+  opacity: 0;
+
+  pointer-events: none;
+}
+
+#countdown.active {
+  animation:
+    countdownPulse .85s ease-out;
+}
+
+@keyframes countdownPulse {
+
+  0% {
+    opacity: 0;
+    transform: scale(1.7);
+  }
+
+  25% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(.8);
+  }
+}
+
+
+/* =========================================================
+   PAUSE BUTTON
+========================================================= */
+
+#pauseButton {
+  position: absolute;
+
+  right: 20px;
+  top: 95px;
+
+  width: 42px;
+  height: 42px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid rgba(255,255,255,.2);
+
+  background:
+    rgba(5,8,14,.65);
+
+  color: white;
+
+  pointer-events: auto;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   MOBILE CONTROLS
+========================================================= */
+
+#mobileControls {
+  position: fixed;
+  inset: 0;
+
+  z-index: 50;
+
+  pointer-events: none;
+
+  opacity: 0;
+}
+
+#mobileControls.visible {
+  opacity: 1;
+}
+
+.controlButton {
+  position: absolute;
+
+  width: 75px;
+  height: 75px;
+
+  border-radius: 50%;
+
+  border:
+    1px solid rgba(255,255,255,.25);
+
+  background:
+    rgba(5,8,14,.58);
+
+  color: white;
+
+  font-size: 27px;
+
+  backdrop-filter: blur(8px);
+
+  pointer-events: auto;
+
+  touch-action: none;
+
+  -webkit-tap-highlight-color:
+    transparent;
+}
+
+.controlButton:active {
+  background:
+    rgba(255,255,255,.25);
+
+  transform: scale(.94);
+}
+
+.steerButton {
+  bottom: 30px;
+}
+
+#steerLeft {
+  left: 25px;
+}
+
+#steerRight {
+  left: 112px;
+}
+
+.brakeButton {
+  right: 112px;
+  bottom: 30px;
+}
+
+.accelerateButton {
+  right: 25px;
+  bottom: 115px;
+}
+
+.nitroButton {
+  right: 110px;
+  bottom: 120px;
+
+  width: 82px;
+  height: 82px;
+
+  font-size: 30px;
+}
+
+
+/* =========================================================
+   ACHIEVEMENT
+========================================================= */
+
+#achievementPopup {
+  position: fixed;
+
+  right: 25px;
+  top: 100px;
+
+  z-index: 700;
+
+  display: flex;
+  align-items: center;
+
+  gap: 14px;
+
+  padding: 14px 18px;
+
+  border-radius: 12px;
+
+  background:
+    rgba(8,12,19,.9);
+
+  border:
+    1px solid rgba(255,255,255,.15);
+
+  box-shadow:
+    0 15px 50px rgba(0,0,0,.5);
+
+  transform:
+    translateX(130%);
+
+  transition:
+    transform .5s ease;
+}
+
+#achievementPopup.visible {
+  transform:
+    translateX(0);
+}
+
+.achievementIcon {
+  font-size: 30px;
+}
+
+#achievementPopup small,
+#achievementPopup strong {
+  display: block;
+}
+
+#achievementPopup small {
+  font-size: 7px;
+  letter-spacing: 2px;
+  opacity: .45;
+}
+
+#achievementPopup strong {
+  margin-top: 4px;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 800px) {
+
+  .menuTop {
+    padding: 18px;
+  }
+
+  .profile {
+    gap: 5px;
+  }
+
+  .profileLevel,
+  .profileCoins {
+    padding: 8px 10px;
+    font-size: 10px;
+  }
+
+  .menuContent {
+    margin-left: 25px;
+    margin-top: 12vh;
+  }
+
+  .menuContent h1 {
+    font-size: 75px;
+    letter-spacing: -4px;
+  }
+
+  .controlsDesktop {
+    display: none;
+  }
+
+  .quickStats {
+    gap: 22px;
+    margin-top: 35px;
+  }
+
+  .quickStats strong {
+    font-size: 19px;
+  }
+
+  .quickStats span {
+    font-size: 7px;
+  }
+
+  .menuBottom {
+    display: none;
+  }
+
+  #nitroPanel {
+    width: 180px;
+    bottom: 25px;
+    left: 25px;
+  }
+
+  #miniMapPanel {
+    display: none;
+  }
+
+  .garageLayout {
+    grid-template-columns: 1fr;
+    overflow-y: auto;
+  }
+
+  .carPreview {
+    min-height: 260px;
+  }
+
+  .finishStats {
+    grid-template-columns: 1fr;
+  }
+
+  #speedPanel {
+    left: 10px;
+    top: 10px;
+  }
+
+  #racePanel {
+    top: 10px;
+  }
+
+  #timePanel {
+    right: 10px;
+    top: 10px;
+  }
+
+  #pauseButton {
+    right: 10px;
+    top: 90px;
+  }
+
+  #checkpointDisplay {
+    top: 90px;
+  }
+
+}
+
+@media (min-width: 801px) {
+
+  #mobileControls {
+    display: none;
+  }
+
+}
+
+
+/* =========================================================
+   SCROLLBARS
+========================================================= */
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(255,255,255,.03);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,.2);
+  border-radius: 20px;
+}
