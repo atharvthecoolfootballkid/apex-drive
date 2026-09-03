@@ -1,296 +1,1335 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#05070b">
-<title>APEX DRIVE — Ultimate 3D Racing</title>
+
+<meta name="viewport"
+      content="width=device-width,
+               initial-scale=1,
+               maximum-scale=1,
+               user-scalable=no">
+
+<meta name="theme-color" content="#02050a">
+
+<title>APEX DRIVE — Ultimate 3D GP</title>
+
 <link rel="stylesheet" href="style.css">
+
+<style>
+*{
+  box-sizing:border-box;
+  -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+  margin:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#02050a;
+  color:white;
+  font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+  user-select:none;
+  touch-action:none;
+}
+
+button{
+  font-family:inherit;
+}
+
+#game{
+  position:fixed;
+  inset:0;
+  width:100%;
+  height:100%;
+  overflow:hidden;
+}
+
+/* =========================
+   LOADING
+   ========================= */
+
+#loadingScreen{
+  position:fixed;
+  inset:0;
+  z-index:9999;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:
+    radial-gradient(circle at 50% 35%,rgba(0,217,255,.14),transparent 35%),
+    linear-gradient(145deg,#03070c,#000);
+}
+
+.loadingBox{
+  width:min(700px,88vw);
+  text-align:center;
+}
+
+.loadingLogo{
+  font-size:clamp(42px,9vw,92px);
+  line-height:.9;
+  font-weight:1000;
+  font-style:italic;
+  letter-spacing:-6px;
+}
+
+.loadingLogo span{
+  color:#00d9ff;
+}
+
+.loadingSubtitle{
+  margin-top:14px;
+  font-size:10px;
+  letter-spacing:6px;
+  opacity:.45;
+}
+
+.loadingTrack{
+  width:100%;
+  height:7px;
+  margin:42px auto 12px;
+  border-radius:99px;
+  overflow:hidden;
+  background:rgba(255,255,255,.08);
+}
+
+#loadingBar{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#00d9ff,#1677ff);
+  box-shadow:0 0 30px rgba(0,217,255,.7);
+  transition:width:.25s;
+}
+
+#loadingText{
+  font-size:10px;
+  letter-spacing:2px;
+  opacity:.45;
+}
+
+/* =========================
+   MAIN MENU
+   ========================= */
+
+#mainMenu{
+  position:fixed;
+  inset:0;
+  z-index:200;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:auto;
+
+  background:
+    radial-gradient(circle at 72% 20%,rgba(0,217,255,.12),transparent 32%),
+    radial-gradient(circle at 15% 85%,rgba(30,80,255,.09),transparent 30%),
+    linear-gradient(135deg,rgba(2,5,10,.74),rgba(2,5,10,.96));
+}
+
+.menuBox{
+  width:min(940px,94vw);
+  max-height:94vh;
+  overflow:auto;
+  padding:34px;
+  border-radius:28px;
+  border:1px solid rgba(255,255,255,.11);
+  background:rgba(5,10,17,.84);
+  backdrop-filter:blur(20px);
+  box-shadow:
+    0 30px 100px rgba(0,0,0,.58),
+    inset 0 1px rgba(255,255,255,.05);
+}
+
+.menuKicker{
+  font-size:10px;
+  letter-spacing:5px;
+  opacity:.4;
+  font-weight:900;
+}
+
+.menuTitle{
+  margin:7px 0 0;
+  font-size:clamp(45px,9vw,92px);
+  line-height:.86;
+  font-weight:1000;
+  font-style:italic;
+  letter-spacing:-7px;
+}
+
+.menuTitle span{
+  color:#00d9ff;
+}
+
+.menuTagline{
+  margin-top:16px;
+  font-size:11px;
+  letter-spacing:3px;
+  color:rgba(255,255,255,.5);
+}
+
+.menuDivider{
+  width:100%;
+  height:1px;
+  margin:27px 0;
+  background:rgba(255,255,255,.09);
+}
+
+.menuButton{
+  width:100%;
+  min-height:58px;
+  margin:7px 0;
+  border:0;
+  border-radius:12px;
+  background:#00d9ff;
+  color:#021014;
+  font-weight:1000;
+  font-size:13px;
+  letter-spacing:2px;
+  cursor:pointer;
+  transition:.18s;
+}
+
+.menuButton:hover{
+  transform:translateY(-2px);
+  box-shadow:0 12px 30px rgba(0,217,255,.2);
+}
+
+.menuButton:active{
+  transform:scale(.98);
+}
+
+.secondaryButton{
+  color:white;
+  background:rgba(255,255,255,.065);
+  border:1px solid rgba(255,255,255,.1);
+}
+
+.menuStats{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:10px;
+  margin-top:18px;
+}
+
+.menuStat{
+  padding:17px;
+  text-align:center;
+  border-radius:13px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.07);
+}
+
+.menuStat strong{
+  display:block;
+  font-size:23px;
+  font-weight:1000;
+}
+
+.menuStat span{
+  display:block;
+  margin-top:5px;
+  font-size:9px;
+  letter-spacing:2px;
+  opacity:.4;
+}
+
+.controlsHint{
+  margin-top:17px;
+  text-align:center;
+  font-size:9px;
+  line-height:1.7;
+  letter-spacing:1.3px;
+  color:rgba(255,255,255,.34);
+}
+
+/* =========================
+   HUD
+   ========================= */
+
+#hud{
+  position:fixed;
+  inset:0;
+  z-index:100;
+  pointer-events:none;
+}
+
+#raceInfo{
+  position:absolute;
+  top:20px;
+  left:50%;
+  transform:translateX(-50%);
+  display:flex;
+  gap:8px;
+}
+
+.raceInfoBox{
+  min-width:88px;
+  padding:10px 14px;
+  text-align:center;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(3,7,12,.72);
+  backdrop-filter:blur(10px);
+}
+
+.raceInfoBox span{
+  display:block;
+  font-size:8px;
+  letter-spacing:2px;
+  opacity:.4;
+}
+
+.raceInfoBox strong{
+  display:block;
+  margin-top:3px;
+  font-size:16px;
+}
+
+#pauseButton{
+  position:absolute;
+  top:20px;
+  right:20px;
+  width:46px;
+  height:46px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.13);
+  background:rgba(3,7,12,.75);
+  color:white;
+  pointer-events:auto;
+  cursor:pointer;
+}
+
+#speedPanel{
+  position:absolute;
+  left:24px;
+  bottom:24px;
+  width:170px;
+  padding:15px;
+  border-radius:15px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(3,7,12,.76);
+  backdrop-filter:blur(10px);
+}
+
+.speedLabel{
+  font-size:8px;
+  letter-spacing:3px;
+  opacity:.4;
+}
+
+#speedValue{
+  margin-top:2px;
+  font-size:48px;
+  line-height:1;
+  font-weight:1000;
+  font-variant-numeric:tabular-nums;
+}
+
+.speedUnit{
+  font-size:9px;
+  opacity:.45;
+}
+
+#nitroBar{
+  width:100%;
+  height:7px;
+  margin-top:12px;
+  border-radius:99px;
+  overflow:hidden;
+  background:rgba(255,255,255,.1);
+}
+
+#nitroBar::before{
+  content:"";
+  display:block;
+  width:70%;
+  height:100%;
+  background:#00d9ff;
+}
+
+#miniMap{
+  position:absolute;
+  right:20px;
+  bottom:20px;
+  width:170px;
+  height:120px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.1);
+  background:rgba(3,7,12,.72);
+}
+
+/* =========================
+   COUNTDOWN
+   ========================= */
+
+#countdown{
+  position:fixed;
+  inset:0;
+  z-index:180;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  pointer-events:none;
+}
+
+.countdownNumber{
+  font-size:clamp(100px,20vw,220px);
+  font-weight:1000;
+  font-style:italic;
+  text-shadow:
+    0 0 25px rgba(0,217,255,.55),
+    0 0 90px rgba(0,217,255,.25);
+}
+
+/* =========================
+   PAUSE / FINISH
+   ========================= */
+
+#pauseScreen,
+#finishScreen{
+  position:fixed;
+  inset:0;
+  z-index:400;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  background:rgba(0,0,0,.7);
+  backdrop-filter:blur(14px);
+}
+
+.pauseBox,
+.finishBox{
+  width:min(560px,90vw);
+  padding:35px;
+  text-align:center;
+  border-radius:22px;
+  border:1px solid rgba(255,255,255,.11);
+  background:rgba(6,12,20,.96);
+  box-shadow:0 30px 90px rgba(0,0,0,.55);
+}
+
+.pauseTitle,
+.finishTitle{
+  font-size:42px;
+  font-weight:1000;
+  font-style:italic;
+}
+
+.pauseBox button,
+.finishBox button{
+  width:100%;
+  min-height:50px;
+  margin-top:10px;
+  border:0;
+  border-radius:10px;
+  background:#00d9ff;
+  color:#021014;
+  font-weight:1000;
+  cursor:pointer;
+}
+
+/* =========================
+   MOBILE
+   ========================= */
+
+#mobileControls{
+  position:fixed;
+  inset:0;
+  z-index:250;
+  pointer-events:none;
+}
+
+.touchButton{
+  position:absolute;
+  width:72px;
+  height:72px;
+  border-radius:50%;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(5,10,17,.58);
+  color:white;
+  display:grid;
+  place-items:center;
+  font-size:22px;
+  font-weight:1000;
+  pointer-events:auto;
+  touch-action:none;
+  backdrop-filter:blur(8px);
+}
+
+#touchLeft{
+  left:24px;
+  bottom:30px;
+}
+
+#touchRight{
+  left:108px;
+  bottom:30px;
+}
+
+#touchGas{
+  right:25px;
+  bottom:105px;
+  width:82px;
+  height:82px;
+  background:rgba(0,217,255,.2);
+}
+
+#touchBrake{
+  right:115px;
+  bottom:30px;
+}
+
+#touchNitro{
+  right:25px;
+  bottom:20px;
+  background:rgba(25,100,255,.22);
+}
+
+/* =========================
+   EXPANDED PANELS
+   ========================= */
+
+#expandedUI{
+  position:fixed;
+  inset:0;
+  z-index:600;
+  pointer-events:none;
+}
+
+.ad-panel{
+  position:absolute;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:24px;
+  background:rgba(0,0,0,.68);
+  backdrop-filter:blur(14px);
+  pointer-events:auto;
+}
+
+.ad-panel.active{
+  display:flex;
+}
+
+.ad-card{
+  width:min(1080px,94vw);
+  max-height:90vh;
+  overflow:auto;
+  padding:28px;
+  border-radius:24px;
+  border:1px solid rgba(255,255,255,.11);
+  background:
+    radial-gradient(circle at 100% 0,
+      rgba(0,217,255,.13),
+      transparent 30%),
+    linear-gradient(145deg,
+      rgba(15,24,38,.98),
+      rgba(4,8,14,.98));
+  box-shadow:0 30px 100px rgba(0,0,0,.58);
+}
+
+.ad-header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:24px;
+}
+
+.ad-kicker{
+  font-size:10px;
+  letter-spacing:4px;
+  opacity:.45;
+  font-weight:900;
+}
+
+.ad-title{
+  margin:5px 0 0;
+  font-size:clamp(28px,5vw,48px);
+  font-weight:1000;
+  letter-spacing:-2px;
+}
+
+.ad-close{
+  width:42px;
+  height:42px;
+  border:1px solid rgba(255,255,255,.11);
+  border-radius:50%;
+  background:rgba(255,255,255,.06);
+  color:white;
+  font-size:20px;
+  cursor:pointer;
+}
+
+.ad-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:14px;
+}
+
+.ad-card-small{
+  min-height:135px;
+  padding:20px;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.11);
+  background:rgba(255,255,255,.045);
+  transition:.18s;
+}
+
+.ad-card-small:hover{
+  transform:translateY(-3px);
+  border-color:rgba(0,217,255,.45);
+}
+
+.ad-icon{
+  margin-bottom:12px;
+  font-size:28px;
+}
+
+.ad-card-small h3{
+  margin:0 0 7px;
+  font-size:16px;
+}
+
+.ad-card-small p{
+  margin:0;
+  color:rgba(255,255,255,.58);
+  font-size:11px;
+  line-height:1.6;
+}
+
+.ad-action{
+  width:100%;
+  min-height:42px;
+  margin-top:14px;
+  border:0;
+  border-radius:10px;
+  background:rgba(255,255,255,.09);
+  color:white;
+  font-weight:900;
+  cursor:pointer;
+}
+
+.ad-action.primary{
+  background:#00d9ff;
+  color:#031014;
+}
+
+.ad-stat-row{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:10px;
+  margin-bottom:20px;
+}
+
+.ad-stat{
+  padding:15px;
+  border-radius:14px;
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.11);
+}
+
+.ad-stat strong{
+  display:block;
+  font-size:24px;
+}
+
+.ad-stat span{
+  display:block;
+  margin-top:3px;
+  font-size:9px;
+  letter-spacing:1px;
+  opacity:.45;
+}
+
+.car-showcase{
+  position:relative;
+  min-height:220px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  border-radius:20px;
+  border:1px solid rgba(255,255,255,.11);
+  background:
+    radial-gradient(ellipse at center,
+      rgba(0,217,255,.12),
+      transparent 55%),
+    repeating-linear-gradient(
+      0deg,
+      transparent 0 34px,
+      rgba(255,255,255,.025) 35px),
+    #080e16;
+  font-size:clamp(55px,10vw,105px);
+}
+
+.car-showcase::after{
+  content:"";
+  position:absolute;
+  bottom:42px;
+  width:70%;
+  height:2px;
+  background:rgba(0,217,255,.5);
+  box-shadow:0 0 25px rgba(0,217,255,.5);
+}
+
+.progress{
+  height:8px;
+  margin-top:8px;
+  border-radius:99px;
+  overflow:hidden;
+  background:rgba(255,255,255,.08);
+}
+
+.progress i{
+  display:block;
+  height:100%;
+  background:linear-gradient(90deg,#00d9ff,#1677ff);
+}
+
+.option-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  padding:16px 0;
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+
+.switch{
+  width:48px;
+  height:27px;
+  padding:3px;
+  border-radius:99px;
+  background:rgba(255,255,255,.12);
+  cursor:pointer;
+}
+
+.switch i{
+  display:block;
+  width:21px;
+  height:21px;
+  border-radius:50%;
+  background:white;
+  transition:.18s;
+}
+
+.switch.on{
+  background:rgba(0,217,255,.65);
+}
+
+.switch.on i{
+  transform:translateX(21px);
+}
+
+.track-card{
+  min-height:175px;
+  overflow:hidden;
+  border-radius:18px;
+  border:1px solid rgba(255,255,255,.11);
+  background:linear-gradient(
+    145deg,
+    rgba(255,255,255,.06),
+    rgba(255,255,255,.025));
+}
+
+.track-art{
+  height:95px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:42px;
+  background:
+    linear-gradient(140deg,
+      rgba(0,217,255,.12),
+      transparent),
+    #0b111a;
+}
+
+.track-info{
+  padding:13px;
+}
+
+.track-info strong{
+  font-size:14px;
+}
+
+.track-info small{
+  display:block;
+  margin-top:5px;
+  font-size:10px;
+  opacity:.45;
+}
+
+.achievement{
+  display:flex;
+  align-items:center;
+  gap:13px;
+  padding:14px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.11);
+  background:rgba(255,255,255,.045);
+}
+
+.achievement .badge{
+  width:42px;
+  height:42px;
+  display:grid;
+  place-items:center;
+  flex:none;
+  border-radius:12px;
+  background:rgba(0,217,255,.13);
+  font-size:21px;
+}
+
+.ad-toast{
+  position:fixed;
+  left:50%;
+  bottom:28px;
+  z-index:9999;
+  padding:12px 18px;
+  border-radius:999px;
+  border:1px solid rgba(0,217,255,.4);
+  background:rgba(4,10,17,.95);
+  box-shadow:0 10px 40px rgba(0,0,0,.4);
+  transform:translate(-50%,20px);
+  opacity:0;
+  transition:.25s;
+  font-size:11px;
+  font-weight:900;
+  letter-spacing:1px;
+}
+
+.ad-toast.show{
+  opacity:1;
+  transform:translate(-50%,0);
+}
+
+@media(max-width:760px){
+
+  .menuBox{
+    padding:22px;
+  }
+
+  .ad-grid{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .ad-stat-row{
+    grid-template-columns:1fr 1fr;
+  }
+
+  #speedPanel{
+    left:14px;
+    bottom:120px;
+  }
+
+  #miniMap{
+    right:14px;
+    bottom:120px;
+    width:135px;
+    height:95px;
+  }
+}
+
+@media(max-width:480px){
+
+  .menuTitle{
+    letter-spacing:-3px;
+  }
+
+  .ad-grid{
+    grid-template-columns:1fr;
+  }
+
+  .ad-card{
+    padding:20px;
+    max-height:93vh;
+  }
+
+  #raceInfo{
+    gap:4px;
+  }
+
+  .raceInfoBox{
+    min-width:70px;
+    padding:8px;
+  }
+}
+</style>
 </head>
 
 <body>
 
 <!-- =========================================================
-     GAME CANVAS
-========================================================= -->
+     GAME
+     ========================================================= -->
 
 <div id="game"></div>
 
 <!-- =========================================================
      LOADING SCREEN
-========================================================= -->
+     ========================================================= -->
 
-<section id="loadingScreen">
+<div id="loadingScreen">
 
-  <div class="loadingLogo">
-    <span>APEX</span> DRIVE
+  <div class="loadingBox">
+
+    <div class="loadingLogo">
+      APEX <span>DRIVE</span>
+    </div>
+
+    <div class="loadingSubtitle">
+      ULTIMATE 3D GP
+    </div>
+
+    <div class="loadingTrack">
+      <div id="loadingBar"></div>
+    </div>
+
+    <div id="loadingText">
+      INITIALIZING RACING SYSTEM...
+    </div>
+
   </div>
 
-  <div class="loadingSub">
-    ULTIMATE 3D STREET RACING
-  </div>
-
-  <div class="loadingCar">
-    🏎️
-  </div>
-
-  <div class="loadingTrack">
-    <div id="loadingBar"></div>
-  </div>
-
-  <div id="loadingText">
-    INITIALIZING ENGINE...
-  </div>
-
-</section>
+</div>
 
 <!-- =========================================================
      MAIN MENU
-========================================================= -->
+     ========================================================= -->
 
-<section id="mainMenu">
+<div id="mainMenu">
 
-  <div class="menuBackground"></div>
+  <div class="menuBox">
 
-  <div class="menuTop">
+    <div class="menuKicker">
+      APEX MOTORSPORTS PRESENTS
+    </div>
 
-```
-<div class="brand">
-  <span>APEX</span> DRIVE
-</div>
+    <div class="menuTitle">
+      APEX <span>DRIVE</span>
+    </div>
 
-<div class="profile">
+    <div class="menuTagline">
+      THE ULTIMATE 3D GRAND PRIX EXPERIENCE
+    </div>
 
-  <div class="profileLevel">
-    LVL <strong id="playerLevel">1</strong>
+    <div class="menuDivider"></div>
+
+    <button
+      id="startRaceButton"
+      class="menuButton">
+      START GRAND PRIX
+    </button>
+
+    <button
+      id="cameraButton"
+      class="menuButton secondaryButton">
+      CAMERA: THIRD PERSON
+    </button>
+
+    <button
+      class="menuButton secondaryButton"
+      data-open-panel="garagePanel">
+      🏎️ GARAGE
+    </button>
+
+    <button
+      class="menuButton secondaryButton"
+      data-open-panel="trackPanel">
+      🌍 TRACK SELECT
+    </button>
+
+    <button
+      class="menuButton secondaryButton"
+      data-open-panel="championshipPanel">
+      🏆 CHAMPIONSHIP
+    </button>
+
+    <button
+      class="menuButton secondaryButton"
+      data-open-panel="driverPanel">
+      👤 DRIVER PROFILE
+    </button>
+
+    <button
+      class="menuButton secondaryButton"
+      data-open-panel="achievementPanel">
+      🏅 ACHIEVEMENTS
+    </button>
+
+    <button
+      class="menuButton secondaryButton"
+      data-open-panel="settingsPanel">
+      ⚙️ SETTINGS
+    </button>
+
+    <div class="menuDivider"></div>
+
+    <div class="menuStats">
+
+      <div class="menuStat">
+        <strong>3</strong>
+        <span>LAPS</span>
+      </div>
+
+      <div class="menuStat">
+        <strong>10</strong>
+        <span>DRIVERS</span>
+      </div>
+
+      <div class="menuStat">
+        <strong>3D</strong>
+        <span>WORLD</span>
+      </div>
+
+    </div>
+
+    <div class="controlsHint">
+      W A S D / ARROWS · SHIFT NITRO · SPACE BRAKE · V CAMERA · ESC PAUSE
+      <br>
+      MOBILE: STEERING + GAS + BRAKE + NITRO
+    </div>
+
   </div>
 
-  <div class="profileCoins">
-    🪙 <strong id="playerCoins">2500</strong>
-  </div>
-
-</div>
-```
-
-  </div>
-
-  <div class="menuContent">
-
-```
-<div class="eyebrow">
-  WELCOME TO THE STREETS
 </div>
 
-<h1>
-  APEX
-  <span>DRIVE</span>
-</h1>
+<!-- =========================================================
+     HUD
+     ========================================================= -->
 
-<div class="menuLine"></div>
+<div id="hud">
 
-<p class="tagline">
-  RACE • DRIFT • BOOST • DOMINATE
-</p>
+  <div id="raceInfo">
 
+    <div class="raceInfoBox">
+      <span>POSITION</span>
+      <strong id="position">P1</strong>
+    </div>
 
-<div class="menuButtons">
+    <div class="raceInfoBox">
+      <span>LAP</span>
+      <strong id="lap">1 / 3</strong>
+    </div>
 
-  <button id="startRaceButton" class="mainButton">
-    <span>▶</span>
-    START RACE
+    <div class="raceInfoBox">
+      <span>TIME</span>
+      <strong id="raceTime">00:00.000</strong>
+    </div>
+
+  </div>
+
+  <button id="pauseButton">
+    ❚❚
   </button>
 
-  <button id="garageButton" class="menuButton">
-    🏎️ GARAGE
+  <div id="speedPanel">
+
+    <div class="speedLabel">
+      SPEED
+    </div>
+
+    <div id="speedValue">
+      0
+    </div>
+
+    <div class="speedUnit">
+      KM/H
+    </div>
+
+    <div id="nitroBar"></div>
+
+  </div>
+
+  <canvas id="miniMap"></canvas>
+
+</div>
+
+<!-- =========================================================
+     COUNTDOWN
+     ========================================================= -->
+
+<div id="countdown"></div>
+
+<!-- =========================================================
+     PAUSE SCREEN
+     ========================================================= -->
+
+<div id="pauseScreen">
+
+  <div class="pauseBox">
+
+    <div class="pauseTitle">
+      PAUSED
+    </div>
+
+    <button id="resumeButton">
+      RESUME RACE
+    </button>
+
+    <button id="restartButton">
+      RESTART RACE
+    </button>
+
+    <button id="menuButton">
+      MAIN MENU
+    </button>
+
+  </div>
+
+</div>
+
+<!-- =========================================================
+     FINISH SCREEN
+     ========================================================= -->
+
+<div id="finishScreen">
+
+  <div class="finishBox">
+
+    <div class="finishTitle">
+      RACE FINISHED
+    </div>
+
+    <div style="
+      margin-top:20px;
+      font-size:12px;
+      opacity:.5;
+      letter-spacing:2px;">
+      FINISH POSITION
+    </div>
+
+    <div
+      id="finishPosition"
+      style="
+        margin-top:5px;
+        font-size:70px;
+        font-weight:1000;
+        font-style:italic;">
+      P1
+    </div>
+
+    <div style="
+      margin-top:15px;
+      font-size:12px;
+      opacity:.5;
+      letter-spacing:2px;">
+      FINAL TIME
+    </div>
+
+    <div
+      id="finishTime"
+      style="
+        margin-top:5px;
+        font-size:28px;
+        font-weight:900;">
+      00:00.000
+    </div>
+
+    <button id="finishRestart">
+      RACE AGAIN
+    </button>
+
+    <button id="finishMenu">
+      MAIN MENU
+    </button>
+
+  </div>
+
+</div>
+
+<!-- =========================================================
+     MOBILE CONTROLS
+     ========================================================= -->
+
+<div id="mobileControls">
+
+  <button
+    id="touchLeft"
+    class="touchButton">
+    ◀
   </button>
 
-  <button id="tracksButton" class="menuButton">
-    🗺️ TRACKS
+  <button
+    id="touchRight"
+    class="touchButton">
+    ▶
   </button>
 
-  <button id="settingsButton" class="menuButton">
-    ⚙️ SETTINGS
+  <button
+    id="touchGas"
+    class="touchButton">
+    ▲
+  </button>
+
+  <button
+    id="touchBrake"
+    class="touchButton">
+    ▼
+  </button>
+
+  <button
+    id="touchNitro"
+    class="touchButton">
+    ⚡
   </button>
 
 </div>
 
+<!-- =========================================================
+     EXPANDED UI
+     ========================================================= -->
 
-<div class="quickStats">
-
-  <div>
-    <strong>6</strong>
-    <span>DRIVERS</span>
-  </div>
-
-  <div>
-    <strong>3</strong>
-    <span>LAPS</span>
-  </div>
-
-  <div>
-    <strong>12+</strong>
-    <span>CARS</span>
-  </div>
-
-  <div>
-    <strong>5</strong>
-    <span>TRACKS</span>
-  </div>
-
-</div>
-```
-
-  </div>
-
-  <div class="menuBottom">
-
-```
-<span>APEX DRIVE v1.0</span>
-
-<span>
-  W/S ACCELERATE • A/D STEER • SPACE NITRO
-</span>
-```
-
-  </div>
-
-</section>
+<div id="expandedUI">
 
 <!-- =========================================================
      GARAGE
-========================================================= -->
+     ========================================================= -->
 
-<section id="garageScreen" class="overlayScreen">
+<section id="garagePanel" class="ad-panel">
 
-  <div class="overlayHeader">
+  <div class="ad-card">
 
-```
-<button class="backButton" data-close="garageScreen">
-  ← BACK
-</button>
+    <div class="ad-header">
 
-<h2>GARAGE</h2>
+      <div>
 
-<div class="garageMoney">
-  🪙 <span id="garageCoins">2500</span>
-</div>
-```
+        <div class="ad-kicker">
+          APEX PERFORMANCE DIVISION
+        </div>
 
-  </div>
+        <div class="ad-title">
+          GARAGE
+        </div>
 
-  <div class="garageLayout">
+      </div>
 
-```
-<div class="carPreview">
+      <button
+        class="ad-close"
+        data-close-panel="garagePanel">
+        ×
+      </button>
 
-  <div id="garageCanvas"></div>
-
-  <div class="carName" id="selectedCarName">
-    APEX GT
-  </div>
-
-  <div class="carClass">
-    SUPER SPORT
-  </div>
-
-</div>
-
-
-<div class="carDetails">
-
-  <div class="stat">
-
-    <div>
-      <span>SPEED</span>
-      <strong id="carSpeed">92</strong>
     </div>
 
-    <div class="statBar">
-      <i style="width:92%"></i>
+    <div class="car-showcase">
+      🏎️
     </div>
 
-  </div>
+    <div
+      class="ad-stat-row"
+      style="margin-top:14px">
 
+      <div class="ad-stat">
+        <strong>312</strong>
+        <span>HORSEPOWER</span>
+      </div>
 
-  <div class="stat">
+      <div class="ad-stat">
+        <strong>287</strong>
+        <span>TOP KM/H</span>
+      </div>
 
-    <div>
-      <span>ACCELERATION</span>
-      <strong id="carAcceleration">88</strong>
+      <div class="ad-stat">
+        <strong>4.1s</strong>
+        <span>0–100 KM/H</span>
+      </div>
+
+      <div class="ad-stat">
+        <strong>86%</strong>
+        <span>HANDLING</span>
+      </div>
+
     </div>
 
-    <div class="statBar">
-      <i style="width:88%"></i>
+    <div class="ad-grid">
+
+      <div class="ad-card-small">
+
+        <div class="ad-icon">
+          ⚙️
+        </div>
+
+        <h3>
+          Engine
+        </h3>
+
+        <p>
+          Balanced power delivery for rapid acceleration.
+        </p>
+
+        <div class="progress">
+          <i style="width:82%"></i>
+        </div>
+
+        <button
+          class="ad-action"
+          data-toast="Engine upgrade selected">
+          UPGRADE
+        </button>
+
+      </div>
+
+      <div class="ad-card-small">
+
+        <div class="ad-icon">
+          🛞
+        </div>
+
+        <h3>
+          Handling
+        </h3>
+
+        <p>
+          Sharper steering and improved corner stability.
+        </p>
+
+        <div class="progress">
+          <i style="width:74%"></i>
+        </div>
+
+        <button
+          class="ad-action"
+          data-toast="Handling upgrade selected">
+          UPGRADE
+        </button>
+
+      </div>
+
+      <div class="ad-card-small">
+
+        <div class="ad-icon">
+          ⚡
+        </div>
+
+        <h3>
+          Nitro
+        </h3>
+
+        <p>
+          Increase boost capacity and recharge performance.
+        </p>
+
+        <div class="progress">
+          <i style="width:68%"></i>
+        </div>
+
+        <button
+          class="ad-action"
+          data-toast="Nitro upgrade selected">
+          UPGRADE
+        </button>
+
+      </div>
+
     </div>
-
-  </div>
-
-
-  <div class="stat">
-
-    <div>
-      <span>HANDLING</span>
-      <strong id="carHandling">84</strong>
-    </div>
-
-    <div class="statBar">
-      <i style="width:84%"></i>
-    </div>
-
-  </div>
-
-
-  <div class="stat">
-
-    <div>
-      <span>NITRO</span>
-      <strong id="carNitro">95</strong>
-    </div>
-
-    <div class="statBar">
-      <i style="width:95%"></i>
-    </div>
-
-  </div>
-
-
-  <button id="selectCarButton" class="mainButton">
-    SELECT CAR
-  </button>
-
-</div>
-```
-
-  </div>
-
-  <div class="carSelector">
-
-```
-<button class="carCard selected" data-car="0">
-  <div class="carIcon">🏎️</div>
-  <strong>APEX GT</strong>
-  <small>SUPER SPORT</small>
-</button>
-
-<button class="carCard" data-car="1">
-  <div class="carIcon">🚘</div>
-  <strong>VORTEX R</strong>
-  <small>HYPER</small>
-</button>
-
-<button class="carCard" data-car="2">
-  <div class="carIcon">🏎️</div>
-  <strong>PHANTOM X</strong>
-  <small>TRACK</small>
-</button>
-
-<button class="carCard" data-car="3">
-  <div class="carIcon">🚗</div>
-  <strong>STORM GT</strong>
-  <small>RACING</small>
-</button>
-```
 
   </div>
 
@@ -298,84 +1337,561 @@
 
 <!-- =========================================================
      TRACK SELECT
-========================================================= -->
+     ========================================================= -->
 
-<section id="tracksScreen" class="overlayScreen">
+<section id="trackPanel" class="ad-panel">
 
-  <div class="overlayHeader">
+  <div class="ad-card">
 
-```
-<button class="backButton" data-close="tracksScreen">
-  ← BACK
-</button>
+    <div class="ad-header">
 
-<h2>TRACK SELECT</h2>
-```
+      <div>
+
+        <div class="ad-kicker">
+          WORLD GRAND PRIX
+        </div>
+
+        <div class="ad-title">
+          TRACK SELECT
+        </div>
+
+      </div>
+
+      <button
+        class="ad-close"
+        data-close-panel="trackPanel">
+        ×
+      </button>
+
+    </div>
+
+    <div class="ad-grid">
+
+      <div class="track-card">
+
+        <div class="track-art">
+          🌆
+        </div>
+
+        <div class="track-info">
+
+          <strong>
+            NEON CITY
+          </strong>
+
+          <small>
+            12.4 KM · NIGHT · STREET CIRCUIT
+          </small>
+
+          <button
+            class="ad-action primary"
+            data-select-track="Neon City">
+            SELECT
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="track-card">
+
+        <div class="track-art">
+          🏔️
+        </div>
+
+        <div class="track-info">
+
+          <strong>
+            ALPINE PASS
+          </strong>
+
+          <small>
+            9.8 KM · CLEAR · HIGH SPEED
+          </small>
+
+          <button
+            class="ad-action"
+            data-select-track="Alpine Pass">
+            SELECT
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="track-card">
+
+        <div class="track-art">
+          🌴
+        </div>
+
+        <div class="track-info">
+
+          <strong>
+            COASTAL GP
+          </strong>
+
+          <small>
+            10.7 KM · DAY · OCEAN ROAD
+          </small>
+
+          <button
+            class="ad-action"
+            data-select-track="Coastal GP">
+            SELECT
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="track-card">
+
+        <div class="track-art">
+          🏜️
+        </div>
+
+        <div class="track-info">
+
+          <strong>
+            DESERT RING
+          </strong>
+
+          <small>
+            14.1 KM · SUNSET · ENDURANCE
+          </small>
+
+          <button
+            class="ad-action"
+            data-select-track="Desert Ring">
+            SELECT
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="track-card">
+
+        <div class="track-art">
+          🌧️
+        </div>
+
+        <div class="track-info">
+
+          <strong>
+            STORM CIRCUIT
+          </strong>
+
+          <small>
+            11.6 KM · RAIN · TECHNICAL
+          </small>
+
+          <button
+            class="ad-action"
+            data-select-track="Storm Circuit">
+            SELECT
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="track-card">
+
+        <div class="track-art">
+          🏁
+        </div>
+
+        <div class="track-info">
+
+          <strong>
+            APEX INTERNATIONAL
+          </strong>
+
+          <small>
+            13.2 KM · DAY · GRAND PRIX
+          </small>
+
+          <button
+            class="ad-action"
+            data-select-track="Apex International">
+            SELECT
+          </button>
+
+        </div>
+
+      </div>
+
+    </div>
 
   </div>
 
-  <div class="trackGrid">
+</section>
 
-```
-<button class="trackCard selected" data-track="city">
+<!-- =========================================================
+     CHAMPIONSHIP
+     ========================================================= -->
 
-  <div class="trackImage cityTrack">
-    🌆
+<section id="championshipPanel" class="ad-panel">
+
+  <div class="ad-card">
+
+    <div class="ad-header">
+
+      <div>
+
+        <div class="ad-kicker">
+          APEX WORLD SERIES
+        </div>
+
+        <div class="ad-title">
+          CHAMPIONSHIP
+        </div>
+
+      </div>
+
+      <button
+        class="ad-close"
+        data-close-panel="championshipPanel">
+        ×
+      </button>
+
+    </div>
+
+    <div class="ad-stat-row">
+
+      <div class="ad-stat">
+        <strong>01</strong>
+        <span>ROUND</span>
+      </div>
+
+      <div class="ad-stat">
+        <strong>25</strong>
+        <span>POINTS</span>
+      </div>
+
+      <div class="ad-stat">
+        <strong>P1</strong>
+        <span>RANK</span>
+      </div>
+
+      <div class="ad-stat">
+        <strong>6</strong>
+        <span>ROUNDS</span>
+      </div>
+
+    </div>
+
+    <div class="ad-grid">
+
+      <div class="ad-card-small">
+        <div class="ad-icon">🇯🇵</div>
+        <h3>Round 1</h3>
+        <p>Neon City — READY</p>
+      </div>
+
+      <div class="ad-card-small">
+        <div class="ad-icon">🇨🇭</div>
+        <h3>Round 2</h3>
+        <p>Alpine Pass — LOCKED</p>
+      </div>
+
+      <div class="ad-card-small">
+        <div class="ad-icon">🌊</div>
+        <h3>Round 3</h3>
+        <p>Coastal GP — LOCKED</p>
+      </div>
+
+      <div class="ad-card-small">
+        <div class="ad-icon">🏜️</div>
+        <h3>Round 4</h3>
+        <p>Desert Ring — LOCKED</p>
+      </div>
+
+      <div class="ad-card-small">
+        <div class="ad-icon">🌧️</div>
+        <h3>Round 5</h3>
+        <p>Storm Circuit — LOCKED</p>
+      </div>
+
+      <div class="ad-card-small">
+        <div class="ad-icon">🏁</div>
+        <h3>Round 6</h3>
+        <p>Finale — LOCKED</p>
+      </div>
+
+    </div>
+
   </div>
 
-  <div class="trackInfo">
-    <strong>NEON CITY</strong>
-    <span>URBAN CIRCUIT</span>
-    <small>DAY • NIGHT • RAIN</small>
+</section>
+<!-- =========================================================
+     DRIVER PROFILE
+     ========================================================= -->
+
+<section id="driverPanel" class="ad-panel">
+
+  <div class="ad-card">
+
+    <div class="ad-header">
+
+      <div>
+
+        <div class="ad-kicker">
+          DRIVER DEVELOPMENT
+        </div>
+
+        <div class="ad-title">
+          PROFILE
+        </div>
+
+      </div>
+
+      <button
+        class="ad-close"
+        data-close-panel="driverPanel">
+        ×
+      </button>
+
+    </div>
+
+    <div class="ad-stat-row">
+
+      <div class="ad-stat">
+        <strong>07</strong>
+        <span>LEVEL</span>
+      </div>
+
+      <div class="ad-stat">
+        <strong>2450</strong>
+        <span>XP</span>
+      </div>
+
+      <div class="ad-stat">
+        <strong>12</strong>
+        <span>WINS</span>
+      </div>
+
+      <div class="ad-stat">
+        <strong>38</strong>
+        <span>RACES</span>
+      </div>
+
+    </div>
+
+    <div class="ad-card-small">
+
+      <h3>
+        DRIVER XP
+      </h3>
+
+      <p>
+        Progress toward the next driver level.
+      </p>
+
+      <div class="progress">
+        <i style="width:72%"></i>
+      </div>
+
+    </div>
+
+    <br>
+
+    <div class="ad-grid">
+
+      <div class="ad-card-small">
+
+        <div class="ad-icon">
+          🏆
+        </div>
+
+        <h3>
+          Grand Prix Winner
+        </h3>
+
+        <p>
+          Finish first in a complete Grand Prix.
+        </p>
+
+      </div>
+
+      <div class="ad-card-small">
+
+        <div class="ad-icon">
+          ⚡
+        </div>
+
+        <h3>
+          Perfect Launch
+        </h3>
+
+        <p>
+          Master the start and gain an early advantage.
+        </p>
+
+      </div>
+
+      <div class="ad-card-small">
+
+        <div class="ad-icon">
+          🔥
+        </div>
+
+        <h3>
+          Hot Streak
+        </h3>
+
+        <p>
+          Win five races consecutively.
+        </p>
+
+      </div>
+
+    </div>
+
   </div>
 
-</button>
+</section>
 
+<!-- =========================================================
+     ACHIEVEMENTS
+     ========================================================= -->
 
-<button class="trackCard" data-track="coast">
+<section id="achievementPanel" class="ad-panel">
 
-  <div class="trackImage coastTrack">
-    🌊
-  </div>
+  <div class="ad-card">
 
-  <div class="trackInfo">
-    <strong>COASTAL RUN</strong>
-    <span>OCEAN HIGHWAY</span>
-    <small>COMING SOON</small>
-  </div>
+    <div class="ad-header">
 
-</button>
+      <div>
 
+        <div class="ad-kicker">
+          DRIVER MILESTONES
+        </div>
 
-<button class="trackCard" data-track="mountain">
+        <div class="ad-title">
+          ACHIEVEMENTS
+        </div>
 
-  <div class="trackImage mountainTrack">
-    🏔️
-  </div>
+      </div>
 
-  <div class="trackInfo">
-    <strong>MOUNTAIN PASS</strong>
-    <span>HIGH ALTITUDE</span>
-    <small>COMING SOON</small>
-  </div>
+      <button
+        class="ad-close"
+        data-close-panel="achievementPanel">
+        ×
+      </button>
 
-</button>
+    </div>
 
+    <div style="display:grid;gap:10px">
 
-<button class="trackCard" data-track="desert">
+      <div class="achievement">
 
-  <div class="trackImage desertTrack">
-    🏜️
-  </div>
+        <div class="badge">
+          🏁
+        </div>
 
-  <div class="trackInfo">
-    <strong>DESERT STORM</strong>
-    <span>OPEN ROAD</span>
-    <small>COMING SOON</small>
-  </div>
+        <div>
+          <strong>
+            FIRST LAP
+          </strong>
 
-</button>
-```
+          <div style="
+            margin-top:3px;
+            font-size:10px;
+            opacity:.45;">
+            Complete your first lap.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="achievement">
+
+        <div class="badge">
+          🥇
+        </div>
+
+        <div>
+          <strong>
+            VICTORY
+          </strong>
+
+          <div style="
+            margin-top:3px;
+            font-size:10px;
+            opacity:.45;">
+            Win your first race.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="achievement">
+
+        <div class="badge">
+          ⚡
+        </div>
+
+        <div>
+          <strong>
+            SPEED DEMON
+          </strong>
+
+          <div style="
+            margin-top:3px;
+            font-size:10px;
+            opacity:.45;">
+            Reach a high top speed.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="achievement">
+
+        <div class="badge">
+          🌧️
+        </div>
+
+        <div>
+          <strong>
+            STORM CHASER
+          </strong>
+
+          <div style="
+            margin-top:3px;
+            font-size:10px;
+            opacity:.45;">
+            Finish a race in wet conditions.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="achievement">
+
+        <div class="badge">
+          🏆
+        </div>
+
+        <div>
+          <strong>
+            CHAMPION
+          </strong>
+
+          <div style="
+            margin-top:3px;
+            font-size:10px;
+            opacity:.45;">
+            Complete a championship season.
+          </div>
+        </div>
+
+      </div>
+
+    </div>
 
   </div>
 
@@ -383,408 +1899,465 @@
 
 <!-- =========================================================
      SETTINGS
-========================================================= -->
+     ========================================================= -->
 
-<section id="settingsScreen" class="overlayScreen">
+<section id="settingsPanel" class="ad-panel">
 
-  <div class="overlayHeader">
+  <div class="ad-card">
 
-```
-<button class="backButton" data-close="settingsScreen">
-  ← BACK
-</button>
+    <div class="ad-header">
 
-<h2>SETTINGS</h2>
-```
+      <div>
 
-  </div>
+        <div class="ad-kicker">
+          SYSTEM CONFIGURATION
+        </div>
 
-  <div class="settingsBox">
+        <div class="ad-title">
+          SETTINGS
+        </div>
 
-```
-<div class="settingRow">
+      </div>
 
-  <div>
-    <strong>GRAPHICS</strong>
-    <span>3D rendering quality</span>
-  </div>
+      <button
+        class="ad-close"
+        data-close-panel="settingsPanel">
+        ×
+      </button>
 
-  <select id="graphicsQuality">
-    <option>HIGH</option>
-    <option>MEDIUM</option>
-    <option>LOW</option>
-  </select>
+    </div>
 
-</div>
+    <div class="option-row">
 
+      <div>
 
-<div class="settingRow">
+        <strong>
+          Motion Effects
+        </strong>
 
-  <div>
-    <strong>CAMERA</strong>
-    <span>Racing camera view</span>
-  </div>
+        <div style="
+          font-size:10px;
+          opacity:.45;
+          margin-top:4px;">
+          Camera shake and speed effects
+        </div>
 
-  <select id="cameraMode">
-    <option value="chase">CHASE</option>
-    <option value="close">CLOSE</option>
-    <option value="hood">HOOD</option>
-  </select>
+      </div>
 
-</div>
+      <div
+        class="switch on"
+        data-setting="motion">
 
+        <i></i>
 
-<div class="settingRow">
+      </div>
 
-  <div>
-    <strong>WEATHER</strong>
-    <span>Dynamic race weather</span>
-  </div>
+    </div>
 
-  <select id="weatherMode">
-    <option value="dynamic">DYNAMIC</option>
-    <option value="clear">CLEAR</option>
-    <option value="rain">RAIN</option>
-    <option value="night">NIGHT</option>
-  </select>
+    <div class="option-row">
 
-</div>
+      <div>
 
+        <strong>
+          Rain Effects
+        </strong>
 
-<div class="settingRow">
+        <div style="
+          font-size:10px;
+          opacity:.45;
+          margin-top:4px;">
+          Dynamic weather particles
+        </div>
 
-  <div>
-    <strong>SOUND</strong>
-    <span>Game audio</span>
-  </div>
+      </div>
 
-  <button id="soundToggle" class="toggle active">
-    ON
-  </button>
+      <div
+        class="switch on"
+        data-setting="rain">
 
-</div>
-```
+        <i></i>
+
+      </div>
+
+    </div>
+
+    <div class="option-row">
+
+      <div>
+
+        <strong>
+          Engine Sound
+        </strong>
+
+        <div style="
+          font-size:10px;
+          opacity:.45;
+          margin-top:4px;">
+          Race audio system
+        </div>
+
+      </div>
+
+      <div
+        class="switch on"
+        data-setting="sound">
+
+        <i></i>
+
+      </div>
+
+    </div>
+
+    <div class="option-row">
+
+      <div>
+
+        <strong>
+          Mobile Controls
+        </strong>
+
+        <div style="
+          font-size:10px;
+          opacity:.45;
+          margin-top:4px;">
+          Touch racing controls
+        </div>
+
+      </div>
+
+      <div
+        class="switch on"
+        data-setting="mobile">
+
+        <i></i>
+
+      </div>
+
+    </div>
+
+    <button
+      class="ad-action primary"
+      data-toast="Settings saved">
+      SAVE SETTINGS
+    </button>
 
   </div>
 
 </section>
 
 <!-- =========================================================
-     RACE HUD
-========================================================= -->
+     TOAST
+     ========================================================= -->
 
-<section id="hud">
-
-  <!-- SPEED -->
-
-  <div id="speedPanel" class="hudPanel">
-
-```
-<div class="hudLabel">
-  SPEED
-</div>
-
-<div class="speedNumber">
-  <span id="speed">0</span>
-  <small>KM/H</small>
-</div>
-
-<div class="gearDisplay">
-  GEAR
-  <strong id="gear">1</strong>
-</div>
-```
-
-  </div>
-
-  <!-- POSITION -->
-
-  <div id="racePanel" class="hudPanel">
-
-```
-<div id="position">
-
-  <strong id="positionNumber">
-    1
-  </strong>
-
-  <span>
-    / 6
-  </span>
-
-</div>
-
-<div id="lap">
-
-  LAP
-  <strong id="lapNumber">1</strong>
-  / 3
-
-</div>
-```
-
-  </div>
-
-  <!-- TIME -->
-
-  <div id="timePanel" class="hudPanel">
-
-```
-<div class="hudLabel">
-  RACE TIME
-</div>
-
-<div id="raceTime">
-  00:00.000
-</div>
-
-<div class="bestTime">
-  BEST
-  <span id="bestTime">
-    --:--.---
-  </span>
-</div>
-```
-
-  </div>
-
-  <!-- CHECKPOINT -->
-
-  <div id="checkpointDisplay">
-    CHECKPOINT
-    <strong id="checkpointNumber">1</strong>
-  </div>
-
-  <!-- CENTER MESSAGE -->
-
-  <div id="raceMessage"></div>
-
-  <!-- NITRO -->
-
-  <div id="nitroPanel">
-
-```
-<div class="nitroHeader">
-
-  <span>
-    NITRO
-  </span>
-
-  <strong id="nitroPercent">
-    100%
-  </strong>
-
-</div>
-
-<div class="nitroOuter">
-
-  <div id="nitroBar"></div>
-
-</div>
-
-<div class="nitroHint">
-  HOLD SPACE TO BOOST
-</div>
-```
-
-  </div>
-
-  <!-- MINI MAP -->
-
-  <div id="miniMapPanel">
-
-```
-<div class="mapTitle">
-  CITY CIRCUIT
-</div>
-
-<canvas id="miniMap"
-        width="240"
-        height="160">
-</canvas>
-```
-
-  </div>
-
-  <!-- PAUSE BUTTON -->
-
-  <button id="pauseButton">
-    II
-  </button>
-
-</section>
-
-<!-- =========================================================
-     MOBILE CONTROLS
-========================================================= -->
-
-<div id="mobileControls">
-
-<button id="steerLeft"
-       class="controlButton steerButton">
-◀ </button>
-
-<button id="steerRight"
-       class="controlButton steerButton">
-▶ </button>
-
-<button id="brakeButton"
-       class="controlButton brakeButton">
-▼ </button>
-
-<button id="accelerateButton"
-       class="controlButton accelerateButton">
-▲ </button>
-
-<button id="nitroButton"
-       class="controlButton nitroButton">
-⚡ </button>
+<div id="adToast" class="ad-toast"></div>
 
 </div>
 
 <!-- =========================================================
-     COUNTDOWN
-========================================================= -->
+     GAME ENGINE
+     ========================================================= -->
 
-<div id="countdown">
-</div>
-
-<!-- =========================================================
-     PAUSE SCREEN
-========================================================= -->
-
-<section id="pauseScreen">
-
-  <div class="pauseBox">
-
-```
-<div class="eyebrow">
-  RACE PAUSED
-</div>
-
-<h2>
-  PAUSED
-</h2>
-
-<button id="resumeButton"
-        class="mainButton">
-  RESUME
-</button>
-
-<button id="pauseRestartButton"
-        class="secondaryButton">
-  RESTART RACE
-</button>
-
-<button id="pauseMenuButton"
-        class="secondaryButton">
-  MAIN MENU
-</button>
-```
-
-  </div>
-
-</section>
+<script src="game.js"></script>
 
 <!-- =========================================================
-     FINISH SCREEN
-========================================================= -->
+     APEX DRIVE UI BRIDGE
+     ========================================================= -->
 
-<section id="finishScreen">
+<script>
 
-  <div class="finishBox">
+(function(){
 
-```
-<div class="finishEyebrow">
-  RACE COMPLETE
-</div>
+  "use strict";
 
-<h2>
-  FINISH!
-</h2>
+  const panels = [
+    "garagePanel",
+    "trackPanel",
+    "championshipPanel",
+    "driverPanel",
+    "achievementPanel",
+    "settingsPanel"
+  ];
 
-<div class="finishPosition">
+  function closePanels(){
 
-  <span id="finalPosition">
-    1
-  </span>
+    panels.forEach(function(id){
 
-  <small>
-    PLACE
-  </small>
+      const panel =
+        document.getElementById(id);
 
-</div>
+      if(panel){
+        panel.classList.remove("active");
+      }
 
+    });
 
-<div class="finishStats">
+  }
 
-  <div>
-    <span>RACE TIME</span>
-    <strong id="finalTime">
-      00:00.000
-    </strong>
-  </div>
+  function openPanel(id){
 
-  <div>
-    <span>BEST LAP</span>
-    <strong id="finalLap">
-      00:00.000
-    </strong>
-  </div>
+    closePanels();
 
-  <div>
-    <span>REWARD</span>
-    <strong id="finalReward">
-      +500 🪙
-    </strong>
-  </div>
+    const panel =
+      document.getElementById(id);
 
-</div>
+    if(panel){
+      panel.classList.add("active");
+    }
 
+  }
 
-<div class="finishButtons">
+  function showToast(message){
 
-  <button id="restartButton"
-          class="mainButton">
-    RACE AGAIN
-  </button>
+    const toast =
+      document.getElementById("adToast");
 
-  <button id="menuButton"
-          class="secondaryButton">
-    MAIN MENU
-  </button>
+    if(!toast){
+      return;
+    }
 
-</div>
-```
+    toast.textContent = message;
 
-  </div>
+    toast.classList.add("show");
 
-</section>
+    clearTimeout(
+      window.__apexToastTimer
+    );
+
+    window.__apexToastTimer =
+      setTimeout(function(){
+
+        toast.classList.remove("show");
+
+      },1800);
+
+  }
+
+  window.ApexDriveUI = {
+
+    openPanel:openPanel,
+
+    closePanels:closePanels,
+
+    toast:showToast
+
+  };
+
+  document.addEventListener(
+    "click",
+    function(event){
+
+      const openButton =
+        event.target.closest(
+          "[data-open-panel]"
+        );
+
+      if(openButton){
+
+        openPanel(
+          openButton.dataset.openPanel
+        );
+
+        return;
+      }
+
+      const closeButton =
+        event.target.closest(
+          "[data-close-panel]"
+        );
+
+      if(closeButton){
+
+        closePanels();
+
+        return;
+      }
+
+      const action =
+        event.target.closest(
+          "[data-toast]"
+        );
+
+      if(action){
+
+        showToast(
+          action.dataset.toast
+        );
+
+      }
+
+      const track =
+        event.target.closest(
+          "[data-select-track]"
+        );
+
+      if(track){
+
+        const selected =
+          track.dataset.selectTrack;
+
+        localStorage.setItem(
+          "APEX_SELECTED_TRACK",
+          selected
+        );
+
+        showToast(
+          selected + " selected"
+        );
+
+        setTimeout(
+          closePanels,
+          350
+        );
+
+      }
+
+      const switchButton =
+        event.target.closest(
+          ".switch"
+        );
+
+      if(switchButton){
+
+        switchButton.classList.toggle(
+          "on"
+        );
+
+        const key =
+          switchButton.dataset.setting;
+
+        localStorage.setItem(
+          "APEX_SETTING_" + key,
+          switchButton.classList.contains("on")
+            ? "1"
+            : "0"
+        );
+
+      }
+
+    }
+  );
+
+  document.addEventListener(
+    "keydown",
+    function(event){
+
+      if(event.key === "Escape"){
+
+        closePanels();
+
+      }
+
+    }
+  );
+
+  window.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+      const savedTrack =
+        localStorage.getItem(
+          "APEX_SELECTED_TRACK"
+        );
+
+      if(savedTrack){
+
+        console.log(
+          "Selected track:",
+          savedTrack
+        );
+
+      }
+
+      [
+        "motion",
+        "rain",
+        "sound",
+        "mobile"
+      ].forEach(function(key){
+
+        const saved =
+          localStorage.getItem(
+            "APEX_SETTING_" + key
+          );
+
+        if(saved === null){
+          return;
+        }
+
+        const switchButton =
+          document.querySelector(
+            '.switch[data-setting="' +
+            key +
+            '"]'
+          );
+
+        if(!switchButton){
+          return;
+        }
+
+        if(saved === "1"){
+
+          switchButton.classList.add(
+            "on"
+          );
+
+        }else{
+
+          switchButton.classList.remove(
+            "on"
+          );
+
+        }
+
+      });
+
+    }
+  );
+
+})();
+
+</script>
 
 <!-- =========================================================
-     ACHIEVEMENT POPUP
-========================================================= -->
+     PAUSE BUTTON FALLBACK
+     ========================================================= -->
 
-<div id="achievementPopup">
+<script>
 
-  <div class="achievementIcon">
-    🏆
-  </div>
+document.addEventListener(
+  "DOMContentLoaded",
+  function(){
 
-  <div>
-    <small>ACHIEVEMENT UNLOCKED</small>
-    <strong id="achievementName">
-      FIRST RACE
-    </strong>
-  </div>
+    const pauseButton =
+      document.getElementById(
+        "pauseButton"
+      );
 
-</div>
+    if(!pauseButton){
+      return;
+    }
 
-<!-- =========================================================
-     GAME SCRIPT
-========================================================= -->
+    pauseButton.addEventListener(
+      "click",
+      function(){
 
-<script type="module" src="game.js"></script>
+        document.dispatchEvent(
+          new KeyboardEvent(
+            "keydown",
+            {
+              key:"Escape",
+              code:"Escape"
+            }
+          )
+        );
+
+      }
+    );
+
+  }
+);
+
+</script>
 
 </body>
 </html>
